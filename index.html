@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteio Sagaz Motors</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        :root { --bg: #050505; --red: #b30000; --text: #f2f2f2; }
+        body { background: radial-gradient(circle at top, #220000, #050505); color: var(--text); font-family: sans-serif; display: flex; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .container { width: 100%; max-width: 400px; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .logo-text { font-size: 32px; font-weight: 900; color: var(--red); text-shadow: 0 0 15px #ff0000; text-transform: uppercase; }
+        .countdown { text-align: center; font-size: 18px; font-weight: bold; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 50px; border: 1px dashed var(--red); margin-bottom: 20px; }
+        .card { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.1); padding: 25px; border-radius: 25px; backdrop-filter: blur(12px); box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
+        .form-control { width: 100%; padding: 15px; margin: 8px 0; border-radius: 12px; border: 1px solid #333; background: rgba(0,0,0,0.6); color: #fff; box-sizing: border-box; outline: none; }
+        .row { display: flex; gap: 10px; }
+        .insta-btn { display: block; background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); color: white; text-align: center; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; margin-bottom: 15px; }
+        .cta { width: 100%; padding: 18px; background: var(--red); border: none; color: #fff; font-weight: 900; border-radius: 15px; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
+        .cta:disabled { opacity: 0.3; cursor: not-allowed; }
+        .share-box { margin-top: 25px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
+        .btn-wpp { background: #25d366; color: white; border: none; padding: 15px; width: 100%; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        #resultado { display: none; margin-top: 15px; padding: 15px; border-radius: 12px; text-align: center; font-weight: bold; background: rgba(0,255,100,0.1); color: #00ff88; border: 1px solid #00ff88; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header"><div class="logo-text">SAGAZ MOTORS</div></div>
+    <div class="countdown" id="timer">Encerra em: 00d 00h 00m 00s</div>
+
+    <div class="card">
+        <a href="https://www.instagram.com/sagazmotors" target="_blank" class="insta-btn" id="followBtn">📸 1º SEGUIR @SAGAZMOTORS</a>
+
+        <form id="sorteioForm">
+            <input type="text" id="nome" class="form-control" placeholder="Nome Completo" required>
+            <input type="text" id="cpf" class="form-control" placeholder="CPF (Apenas números)" maxlength="11" required>
+            <input type="tel" id="celular" class="form-control" placeholder="WhatsApp (DDD + Número)" required>
+            
+            <div class="row">
+                <input type="text" id="cep" class="form-control" placeholder="CEP" maxlength="8" style="width: 60%;">
+                <input type="text" id="numero" class="form-control" placeholder="Nº" style="width: 40%;" required>
+            </div>
+            
+            <input type="text" id="endereco" class="form-control" placeholder="Endereço (Rua e Bairro)" required readonly>
+
+            <button type="submit" id="btnEnviar" class="cta" disabled>2º GARANTIR MEU NÚMERO</button>
+        </form>
+
+        <div id="resultado"></div>
+
+        <div class="share-box">
+            <button class="btn-wpp" onclick="compartilharAmigo()">Mandar no WhatsApp</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzztt3kC5VNZVQpo8R00VdrmCRsqFmMbDQbylhEh28Icyx93rEICkrVSRMuDZxlEqDTZQ/exec';
+
+    // Contador
+    function startTimer() {
+        const target = new Date("Feb 14, 2026 18:00:00").getTime();
+        setInterval(() => {
+            const now = new Date().getTime();
+            const d = target - now;
+            const days = Math.floor(d / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((d % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((d % (1000 * 60)) / 1000);
+            document.getElementById("timer").innerHTML = `Encerra em: ${days}d ${hours}h ${mins}m ${secs}s`;
+        }, 1000);
+    }
+    startTimer();
+
+    // CEP Automático
+    $("#cep").blur(function() {
+        let val = $(this).val().replace(/\D/g, '');
+        if(val.length === 8) {
+            $("#endereco").val("Buscando...");
+            $.getJSON(`https://viacep.com.br/ws/${val}/json/`, function(data) {
+                if(!data.erro) $("#endereco").val(`${data.logradouro}, ${data.bairro}`);
+                else $("#endereco").val("CEP não encontrado.");
+            });
+        }
+    });
+
+    // Destravar Botão
+    $("#followBtn").click(function() {
+        $("#btnEnviar").prop("disabled", false);
+        $(this).html("✅ INSTAGRAM SEGUIDO").css("background", "#333");
+    });
+
+    // Envio e Trava de CPF
+    $("#sorteioForm").on("submit", function(e) {
+        e.preventDefault();
+        const btn = $("#btnEnviar");
+        btn.prop("disabled", true).text("RESERVANDO SEU NÚMERO...");
+        
+        const dados = {
+            nome: $("#nome").val(),
+            cpf: $("#cpf").val(),
+            celular: $("#celular").val(),
+            cep: $("#cep").val(),
+            numero: $("#numero").val(),
+            endereco: $("#endereco").val()
+        };
+
+        fetch(scriptURL, { method: "POST", mode: "no-cors", body: JSON.stringify(dados) })
+        .then(() => {
+            $("#resultado").fadeIn().html("🔥 INSCRIÇÃO REALIZADA!<br>Confira seu número na planilha.");
+            $("#sorteioForm").slideUp();
+            btn.text("CONCLUÍDO");
+        });
+    });
+
+    function compartilharAmigo() {
+        const msg = encodeURIComponent("Ei! Participe do sorteio da Sagaz Motors também: " + window.location.href);
+        window.open(`https://wa.me/?text=${msg}`, '_blank');
+    }
+</script>
+</body>
+</html>
