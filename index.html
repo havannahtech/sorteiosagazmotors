@@ -3,30 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sorteio Sagaz Motors</title>
+    <title>Sorteio Sagaz Motors | Oficial</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
     <style>
-        :root { --bg: #050505; --red: #b30000; --text: #f2f2f2; }
-        body { background: radial-gradient(circle at top, #220000, #050505); color: var(--text); font-family: sans-serif; display: flex; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
+        /* ESTE É O CSS QUE DÁ O VISUAL AO SITE */
+        :root { --bg: #050505; --red: #b30000; --red-glow: #ff0000; --text: #f2f2f2; }
+        body { background: radial-gradient(circle at top, #220000, #050505); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
         .container { width: 100%; max-width: 400px; }
         .header { text-align: center; margin-bottom: 20px; }
-        .logo-text { font-size: 32px; font-weight: 900; color: var(--red); text-shadow: 0 0 15px #ff0000; text-transform: uppercase; }
+        .logo-text { font-size: 30px; font-weight: 900; color: var(--red); text-shadow: 0 0 15px var(--red-glow); text-transform: uppercase; }
+        .logo-img { max-width: 140px; height: auto; filter: drop-shadow(0 0 10px rgba(255,0,0,0.4)); }
         .countdown { text-align: center; font-size: 18px; font-weight: bold; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 50px; border: 1px dashed var(--red); margin-bottom: 20px; }
-        .card { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.1); padding: 25px; border-radius: 25px; backdrop-filter: blur(12px); box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
+        .card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,.1); padding: 25px; border-radius: 25px; backdrop-filter: blur(12px); box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
         .form-control { width: 100%; padding: 15px; margin: 8px 0; border-radius: 12px; border: 1px solid #333; background: rgba(0,0,0,0.6); color: #fff; box-sizing: border-box; outline: none; }
         .row { display: flex; gap: 10px; }
         .insta-btn { display: block; background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); color: white; text-align: center; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; margin-bottom: 15px; }
         .cta { width: 100%; padding: 18px; background: var(--red); border: none; color: #fff; font-weight: 900; border-radius: 15px; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
         .cta:disabled { opacity: 0.3; cursor: not-allowed; }
-        .share-box { margin-top: 25px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
-        .btn-wpp { background: #25d366; color: white; border: none; padding: 15px; width: 100%; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .btn-wpp { background: #25d366; color: white; border: none; padding: 15px; width: 100%; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 20px; }
         #resultado { display: none; margin-top: 15px; padding: 15px; border-radius: 12px; text-align: center; font-weight: bold; background: rgba(0,255,100,0.1); color: #00ff88; border: 1px solid #00ff88; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header"><div class="logo-text">SAGAZ MOTORS</div></div>
+    <div class="header">
+        <img src="logo.png" onerror="this.style.display='none'; document.getElementById('alt-logo').style.display='block'" class="logo-img">
+        <div id="alt-logo" class="logo-text" style="display:none;">SAGAZ MOTORS</div>
+    </div>
+    
     <div class="countdown" id="timer">Encerra em: 00d 00h 00m 00s</div>
 
     <div class="card">
@@ -38,8 +44,8 @@
             <input type="tel" id="celular" class="form-control" placeholder="WhatsApp (DDD + Número)" required>
             
             <div class="row">
-                <input type="text" id="cep" class="form-control" placeholder="CEP" maxlength="8" style="width: 60%;">
-                <input type="text" id="numero" class="form-control" placeholder="Nº" style="width: 40%;" required>
+                <input type="text" id="cep" class="form-control" placeholder="CEP" maxlength="8" style="width: 65%;">
+                <input type="text" id="numero" class="form-control" placeholder="Nº" style="width: 35%;" required>
             </div>
             
             <input type="text" id="endereco" class="form-control" placeholder="Endereço (Rua e Bairro)" required readonly>
@@ -49,16 +55,14 @@
 
         <div id="resultado"></div>
 
-        <div class="share-box">
-            <button class="btn-wpp" onclick="compartilharAmigo()">Mandar no WhatsApp</button>
-        </div>
+        <button class="btn-wpp" onclick="compartilharAmigo()">Mandar no WhatsApp</button>
     </div>
 </div>
 
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbzztt3kC5VNZVQpo8R00VdrmCRsqFmMbDQbylhEh28Icyx93rEICkrVSRMuDZxlEqDTZQ/exec';
 
-    // Contador
+    // Contador Regressivo
     function startTimer() {
         const target = new Date("Feb 14, 2026 18:00:00").getTime();
         setInterval(() => {
@@ -85,13 +89,13 @@
         }
     });
 
-    // Destravar Botão
+    // Liberar Botão (Trava Social)
     $("#followBtn").click(function() {
         $("#btnEnviar").prop("disabled", false);
         $(this).html("✅ INSTAGRAM SEGUIDO").css("background", "#333");
     });
 
-    // Envio e Trava de CPF
+    // Envio e Bloqueio de CPF
     $("#sorteioForm").on("submit", function(e) {
         e.preventDefault();
         const btn = $("#btnEnviar");
@@ -101,15 +105,14 @@
             nome: $("#nome").val(),
             cpf: $("#cpf").val(),
             celular: $("#celular").val(),
-            cep: $("#cep").val(),
             numero: $("#numero").val(),
             endereco: $("#endereco").val()
         };
 
         fetch(scriptURL, { method: "POST", mode: "no-cors", body: JSON.stringify(dados) })
         .then(() => {
-            $("#resultado").fadeIn().html("🔥 INSCRIÇÃO REALIZADA!<br>Confira seu número na planilha.");
-            $("#sorteioForm").slideUp();
+            $("#resultado").fadeIn().html("🔥 INSCRIÇÃO REALIZADA!<br>Boa sorte!");
+            $("#sorteioForm").hide();
             btn.text("CONCLUÍDO");
         });
     });
