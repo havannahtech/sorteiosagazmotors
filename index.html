@@ -12,15 +12,29 @@
         .container { width: 100%; max-width: 400px; }
         .header { text-align: center; margin-bottom: 20px; }
         .logo-img { max-width: 180px; height: auto; filter: drop-shadow(0 0 10px rgba(255,0,0,0.4)); }
-        .countdown { text-align: center; font-size: 18px; font-weight: bold; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 50px; border: 1px dashed var(--red); margin-bottom: 20px; }
+        
+        /* Contador Estiloso */
+        .countdown-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .time-box { background: rgba(255,255,255,0.05); border: 1px solid var(--red); border-radius: 10px; padding: 10px; min-width: 60px; text-align: center; }
+        .time-num { display: block; font-size: 22px; font-weight: 900; color: #fff; }
+        .time-label { font-size: 10px; text-transform: uppercase; color: var(--red); }
+
         .card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,.1); padding: 25px; border-radius: 25px; backdrop-filter: blur(12px); box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
         .form-control { width: 100%; padding: 15px; margin: 8px 0; border-radius: 12px; border: 1px solid #333; background: rgba(0,0,0,0.6); color: #fff; box-sizing: border-box; outline: none; }
         .row { display: flex; gap: 10px; }
-        .insta-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); color: white; text-align: center; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; margin-bottom: 15px; }
+
+        /* Botão Instagram Piscando */
+        .insta-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); color: white; text-align: center; padding: 18px; border-radius: 12px; text-decoration: none; font-weight: bold; margin-bottom: 15px; animation: pulse-red 1.5s infinite; border: 2px solid transparent; }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(220, 39, 67, 0.7); border-color: rgba(255,255,255,0.2); } 70% { box-shadow: 0 0 0 15px rgba(220, 39, 67, 0); border-color: #fff; } 100% { box-shadow: 0 0 0 0 rgba(220, 39, 67, 0); } }
+        
         .cta { width: 100%; padding: 18px; background: var(--red); border: none; color: #fff; font-weight: 900; border-radius: 15px; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
-        .cta:disabled { opacity: 0.3; cursor: not-allowed; }
-        .btn-wpp { background: #25d366; color: white; border: none; padding: 15px; width: 100%; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        #resultado { display: none; margin-top: 15px; padding: 15px; border-radius: 12px; text-align: center; font-weight: bold; background: rgba(0,255,100,0.1); color: #00ff88; border: 1px solid #00ff88; }
+        .cta:disabled { opacity: 0.2; cursor: not-allowed; animation: none; }
+        
+        .btn-send-wpp { background: #25d366; color: white; border: none; padding: 18px; width: 100%; border-radius: 15px; font-weight: 900; cursor: pointer; margin-top: 15px; text-transform: uppercase; display: none; text-decoration: none; text-align: center; }
+        .btn-share-wpp { background: transparent; color: #25d366; border: 1px solid #25d366; padding: 12px; width: 100%; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        
+        #resultado { display: none; margin-top: 15px; padding: 20px; border-radius: 12px; text-align: center; background: rgba(0,255,100,0.1); color: #00ff88; border: 1px solid #00ff88; }
+        .ticket-box { font-size: 32px; font-weight: 900; color: #fff; text-shadow: 0 0 10px #00ff88; margin: 10px 0; }
     </style>
 </head>
 <body>
@@ -30,7 +44,12 @@
         <img src="logo.png" alt="Sagaz Motors" class="logo-img">
     </div>
     
-    <div class="countdown" id="timer">Encerra em: --d --h --m --s</div>
+    <div class="countdown-container" id="timer">
+        <div class="time-box"><span class="time-num" id="days">00</span><span class="time-label">Dias</span></div>
+        <div class="time-box"><span class="time-num" id="hours">00</span><span class="time-label">Horas</span></div>
+        <div class="time-box"><span class="time-num" id="mins">00</span><span class="time-label">Min</span></div>
+        <div class="time-box"><span class="time-num" id="secs">00</span><span class="time-label">Seg</span></div>
+    </div>
 
     <div class="card">
         <a href="https://www.instagram.com/sagazmotors" target="_blank" class="insta-btn" id="followBtn">
@@ -52,31 +71,55 @@
             <button type="submit" id="btnEnviar" class="cta" disabled>2º GARANTIR MEU BILHETE</button>
         </form>
 
-        <div id="resultado"></div>
-        <button class="btn-wpp" onclick="compartilharAmigo()">Mandar no WhatsApp</button>
+        <div id="resultado">
+            <div>🔥 INSCRIÇÃO REALIZADA!</div>
+            <div style="font-size: 12px; margin-top: 10px;">SEU NÚMERO DA SORTE É:</div>
+            <div class="ticket-box" id="ticketNumber">00000</div>
+            
+            <a href="#" id="linkZapBilhete" target="_blank" class="btn-send-wpp">
+                📲 ENVIAR MEU BILHETE PARA SAGAZ
+            </a>
+            
+            <div style="font-size: 11px; margin-top: 10px;">Clique no botão acima para confirmar!</div>
+        </div>
+
+        <button class="btn-share-wpp" onclick="compartilharAmigo()">Convidar um amigo</button>
     </div>
 </div>
 
 <script>
-    // URL do teu Google Script para salvar os dados
     const scriptURL = 'https://script.google.com/macros/s/AKfycbzztt3kC5VNZVQpo8R00VdrmCRsqFmMbDQbylhEh28Icyx93rEICkrVSRMuDZxlEqDTZQ/exec';
 
-    // Contador para 14 de Fevereiro de 2026
-    function startTimer() {
-        const target = new Date("Feb 14, 2026 18:00:00").getTime();
-        setInterval(() => {
-            const now = new Date().getTime();
-            const d = target - now;
-            const days = Math.floor(d / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const mins = Math.floor((d % (1000 * 60 * 60)) / (1000 * 60));
-            const secs = Math.floor((d % (1000 * 60)) / 1000);
-            document.getElementById("timer").innerHTML = `Encerra em: ${days}d ${hours}h ${mins}m ${secs}s`;
-        }, 1000);
+    function validarCPF(cpf) {
+        cpf = cpf.replace(/[^\d]+/g,'');
+        if(cpf == '' || cpf.length != 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+        let add = 0;
+        for (let i=0; i < 9; i++) add += parseInt(cpf.charAt(i)) * (10 - i);
+        let rev = 11 - (add % 11);
+        if (rev == 10 || rev == 11) rev = 0;
+        if (rev != parseInt(cpf.charAt(9))) return false;
+        add = 0;
+        for (let i = 0; i < 10; i++) add += parseInt(cpf.charAt(i)) * (11 - i);
+        rev = 11 - (add % 11);
+        if (rev == 10 || rev == 11) rev = 0;
+        if (rev != parseInt(cpf.charAt(10))) return false;
+        return true;
     }
-    startTimer();
 
-    // Busca automática de Endereço via CEP
+    // NOVA DATA: 28 de Fevereiro de 2026
+    function updateTimer() {
+        const target = new Date("Feb 28, 2026 18:00:00").getTime();
+        const now = new Date().getTime();
+        const d = target - now;
+        if (d > 0) {
+            document.getElementById("days").innerText = Math.floor(d / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+            document.getElementById("hours").innerText = Math.floor((d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+            document.getElementById("mins").innerText = Math.floor((d % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+            document.getElementById("secs").innerText = Math.floor((d % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        }
+    }
+    setInterval(updateTimer, 1000);
+
     $("#cep").blur(function() {
         let val = $(this).val().replace(/\D/g, '');
         if(val.length === 8) {
@@ -88,39 +131,55 @@
         }
     });
 
-    // Desbloqueia o botão apenas após clicar no Instagram
     $("#followBtn").click(function() {
         $("#btnEnviar").prop("disabled", false);
-        $(this).html("✅ INSTAGRAM SEGUIDO").css("background", "#333");
+        $(this).html("✅ INSTAGRAM SEGUIDO").css({"background": "#333", "animation": "none"});
     });
 
-    // Envio dos dados para a Planilha Google
     $("#sorteioForm").on("submit", function(e) {
         e.preventDefault();
-        const btn = $("#btnEnviar");
-        btn.prop("disabled", true).text("RESERVANDO SEU NÚMERO...");
+        const cpfVal = $("#cpf").val();
+        const nomeVal = $("#nome").val();
         
+        if(!validarCPF(cpfVal)) {
+            alert("CPF Inválido! Por favor, confira os números.");
+            return;
+        }
+
+        const btn = $("#btnEnviar");
+        btn.prop("disabled", true).text("GERANDO SEU BILHETE...");
+        
+        const ticket = Math.floor(Math.random() * 50000) + 1;
+        const ticketFormatado = ticket.toString().padStart(5, '0');
+
         const dados = {
-            nome: $("#nome").val(),
-            cpf: $("#cpf").val(),
+            nome: nomeVal,
+            cpf: cpfVal,
             celular: $("#celular").val(),
             numero_casa: $("#numero").val(),
-            endereco: $("#endereco").val()
+            endereco: $("#endereco").val(),
+            bilhete: ticketFormatado
         };
 
         fetch(scriptURL, { method: "POST", mode: "no-cors", body: JSON.stringify(dados) })
         .then(() => {
-            $("#resultado").fadeIn().html("🔥 INSCRIÇÃO REALIZADA!<br>Boa sorte!");
+            $("#ticketNumber").text(ticketFormatado);
+            
+            // Configura o link do WhatsApp com o número do bilhete e nome
+            const msgZap = encodeURIComponent(`Olá Sagaz! Meu nome é ${nomeVal} e acabei de garantir meu bilhete da sorte: ${ticketFormatado}`);
+            $("#linkZapBilhete").attr("href", `https://wa.me/5521999052694?text=${msgZap}`).show();
+            
+            $("#resultado").fadeIn();
             $("#sorteioForm").hide();
             btn.text("CONCLUÍDO");
-        }).catch(err => {
-            alert("Erro ao enviar. Tente novamente.");
-            btn.prop("disabled", false).text("2º GARANTIR MEU NÚMERO");
+        }).catch(() => {
+            alert("Erro de conexão. Tente novamente.");
+            btn.prop("disabled", false).text("GARANTIR MEU BILHETE");
         });
     });
 
     function compartilharAmigo() {
-        const msg = encodeURIComponent("Ei! Participe do sorteio da Sagaz Motors também: " + window.location.href);
+        const msg = encodeURIComponent("Já garanti meu bilhete na Sagaz Motors! Participe você também: " + window.location.href);
         window.open(`https://wa.me/?text=${msg}`, '_blank');
     }
 </script>
