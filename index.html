@@ -7,18 +7,16 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
     <style>
-        /* ESTE É O CSS QUE DÁ O VISUAL AO SITE */
         :root { --bg: #050505; --red: #b30000; --red-glow: #ff0000; --text: #f2f2f2; }
         body { background: radial-gradient(circle at top, #220000, #050505); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
         .container { width: 100%; max-width: 400px; }
         .header { text-align: center; margin-bottom: 20px; }
-        .logo-text { font-size: 30px; font-weight: 900; color: var(--red); text-shadow: 0 0 15px var(--red-glow); text-transform: uppercase; }
-        .logo-img { max-width: 140px; height: auto; filter: drop-shadow(0 0 10px rgba(255,0,0,0.4)); }
+        .logo-img { max-width: 180px; height: auto; filter: drop-shadow(0 0 10px rgba(255,0,0,0.4)); }
         .countdown { text-align: center; font-size: 18px; font-weight: bold; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 50px; border: 1px dashed var(--red); margin-bottom: 20px; }
         .card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,.1); padding: 25px; border-radius: 25px; backdrop-filter: blur(12px); box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
         .form-control { width: 100%; padding: 15px; margin: 8px 0; border-radius: 12px; border: 1px solid #333; background: rgba(0,0,0,0.6); color: #fff; box-sizing: border-box; outline: none; }
         .row { display: flex; gap: 10px; }
-        .insta-btn { display: block; background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); color: white; text-align: center; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; margin-bottom: 15px; }
+        .insta-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); color: white; text-align: center; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; margin-bottom: 15px; }
         .cta { width: 100%; padding: 18px; background: var(--red); border: none; color: #fff; font-weight: 900; border-radius: 15px; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
         .cta:disabled { opacity: 0.3; cursor: not-allowed; }
         .btn-wpp { background: #25d366; color: white; border: none; padding: 15px; width: 100%; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 20px; }
@@ -29,14 +27,15 @@
 
 <div class="container">
     <div class="header">
-        <img src="logo.png" onerror="this.style.display='none'; document.getElementById('alt-logo').style.display='block'" class="logo-img">
-        <div id="alt-logo" class="logo-text" style="display:none;">SAGAZ MOTORS</div>
+        <img src="logo.png" alt="Sagaz Motors" class="logo-img">
     </div>
     
-    <div class="countdown" id="timer">Encerra em: 00d 00h 00m 00s</div>
+    <div class="countdown" id="timer">Encerra em: --d --h --m --s</div>
 
     <div class="card">
-        <a href="https://www.instagram.com/sagazmotors" target="_blank" class="insta-btn" id="followBtn">📸 1º SEGUIR @SAGAZMOTORS</a>
+        <a href="https://www.instagram.com/sagazmotors" target="_blank" class="insta-btn" id="followBtn">
+            📸 1º SEGUIR @SAGAZMOTORS
+        </a>
 
         <form id="sorteioForm">
             <input type="text" id="nome" class="form-control" placeholder="Nome Completo" required>
@@ -44,8 +43,8 @@
             <input type="tel" id="celular" class="form-control" placeholder="WhatsApp (DDD + Número)" required>
             
             <div class="row">
-                <input type="text" id="cep" class="form-control" placeholder="CEP" maxlength="8" style="width: 65%;">
-                <input type="text" id="numero" class="form-control" placeholder="Nº" style="width: 35%;" required>
+                <input type="text" id="cep" class="form-control" placeholder="CEP" maxlength="8">
+                <input type="text" id="numero" class="form-control" placeholder="Nº" style="width: 40%;" required>
             </div>
             
             <input type="text" id="endereco" class="form-control" placeholder="Endereço (Rua e Bairro)" required readonly>
@@ -54,15 +53,15 @@
         </form>
 
         <div id="resultado"></div>
-
         <button class="btn-wpp" onclick="compartilharAmigo()">Mandar no WhatsApp</button>
     </div>
 </div>
 
 <script>
+    // URL do teu Google Script para salvar os dados
     const scriptURL = 'https://script.google.com/macros/s/AKfycbzztt3kC5VNZVQpo8R00VdrmCRsqFmMbDQbylhEh28Icyx93rEICkrVSRMuDZxlEqDTZQ/exec';
 
-    // Contador Regressivo
+    // Contador para 14 de Fevereiro de 2026
     function startTimer() {
         const target = new Date("Feb 14, 2026 18:00:00").getTime();
         setInterval(() => {
@@ -77,7 +76,7 @@
     }
     startTimer();
 
-    // CEP Automático
+    // Busca automática de Endereço via CEP
     $("#cep").blur(function() {
         let val = $(this).val().replace(/\D/g, '');
         if(val.length === 8) {
@@ -89,13 +88,13 @@
         }
     });
 
-    // Liberar Botão (Trava Social)
+    // Desbloqueia o botão apenas após clicar no Instagram
     $("#followBtn").click(function() {
         $("#btnEnviar").prop("disabled", false);
         $(this).html("✅ INSTAGRAM SEGUIDO").css("background", "#333");
     });
 
-    // Envio e Bloqueio de CPF
+    // Envio dos dados para a Planilha Google
     $("#sorteioForm").on("submit", function(e) {
         e.preventDefault();
         const btn = $("#btnEnviar");
@@ -105,7 +104,7 @@
             nome: $("#nome").val(),
             cpf: $("#cpf").val(),
             celular: $("#celular").val(),
-            numero: $("#numero").val(),
+            numero_casa: $("#numero").val(),
             endereco: $("#endereco").val()
         };
 
@@ -114,6 +113,9 @@
             $("#resultado").fadeIn().html("🔥 INSCRIÇÃO REALIZADA!<br>Boa sorte!");
             $("#sorteioForm").hide();
             btn.text("CONCLUÍDO");
+        }).catch(err => {
+            alert("Erro ao enviar. Tente novamente.");
+            btn.prop("disabled", false).text("2º GARANTIR MEU NÚMERO");
         });
     });
 
