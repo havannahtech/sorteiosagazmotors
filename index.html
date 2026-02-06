@@ -8,21 +8,23 @@
     
     <style>
         :root { --bg: #050505; --red: #b30000; --red-glow: #ff0000; --text: #f2f2f2; }
-        body { background: radial-gradient(circle at top, #220000, #050505); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .container { width: 100%; max-width: 400px; }
+        body { background: radial-gradient(circle at top, #220000, #050505); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .container { width: 100%; max-width: 400px; flex-grow: 1; }
         .header { text-align: center; margin-bottom: 20px; }
         .logo-img { max-width: 180px; height: auto; filter: drop-shadow(0 0 10px rgba(255,0,0,0.4)); }
         
+        /* Chamada Atemporal */
+        .chamada-principal { font-size: 14px; color: #fff; font-weight: 800; text-transform: uppercase; margin: 15px 0; letter-spacing: 1px; text-shadow: 0 0 10px var(--red-glow); }
+
         /* Contador */
         .countdown-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
         .time-box { background: rgba(255,255,255,0.05); border: 1px solid var(--red); border-radius: 10px; padding: 10px; min-width: 60px; text-align: center; }
         .time-num { display: block; font-size: 22px; font-weight: 900; color: #fff; }
         .time-label { font-size: 10px; text-transform: uppercase; color: var(--red); }
 
-        .card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,.1); padding: 25px; border-radius: 25px; backdrop-filter: blur(12px); box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
+        .card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,.1); padding: 25px; border-radius: 25px; backdrop-filter: blur(12px); box-shadow: 0 20px 50px rgba(0,0,0,0.6); margin-bottom: 30px; }
         .form-control { width: 100%; padding: 15px; margin: 8px 0; border-radius: 12px; border: 1px solid #333; background: rgba(0,0,0,0.6); color: #fff; box-sizing: border-box; outline: none; }
         
-        /* Botões de Seguir Lado a Lado */
         .insta-row { display: flex; gap: 10px; margin-bottom: 15px; }
         .insta-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px; background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); color: white; text-align: center; padding: 12px 5px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 11px; animation: pulse-red 1.5s infinite; border: 2px solid transparent; }
         
@@ -37,6 +39,9 @@
         
         #resultado { display: none; margin-top: 15px; padding: 20px; border-radius: 12px; text-align: center; background: rgba(0,255,100,0.1); color: #00ff88; border: 1px solid #00ff88; }
         .ticket-box { font-size: 32px; font-weight: 900; color: #fff; text-shadow: 0 0 10px #00ff88; margin: 10px 0; }
+
+        /* Rodapé Discreto */
+        .footer-discreto { text-align: center; font-size: 9px; color: rgba(255,255,255,0.3); letter-spacing: 2px; text-transform: uppercase; margin-top: 20px; padding-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -95,6 +100,10 @@
     </div>
 </div>
 
+<footer class="footer-discreto">
+    VOUCHER PARA MOTOS ACIMA DE R$ 10.000
+</footer>
+
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbzztt3kC5VNZVQpo8R00VdrmCRsqFmMbDQbylhEh28Icyx93rEICkrVSRMuDZxlEqDTZQ/exec';
     
@@ -117,7 +126,6 @@
         return true;
     }
 
-    // NOVA DATA: 27 de Fevereiro de 2026
     function updateTimer() {
         const target = new Date("Feb 27, 2026 18:00:00").getTime();
         const now = new Date().getTime();
@@ -142,7 +150,6 @@
         }
     });
 
-    // Lógica para os dois botões de seguir
     $("#followBtn1").click(function() {
         seguiu1 = true;
         $(this).html("✅ SEGUIDO").css({"background": "#333", "animation": "none"});
@@ -193,7 +200,7 @@
             $("#linkZapBilhete").attr("href", `https://wa.me/5521999052694?text=${msgZap}`).show();
             $("#resultado").fadeIn();
             $("#sorteioForm").hide();
-            $(".insta-row, p").hide(); // Esconde os botões de seguir após o sucesso
+            $(".insta-row, p, .chamada-principal").hide();
             btn.text("CONCLUÍDO");
         }).catch(() => {
             alert("Erro de conexão. Tente novamente.");
