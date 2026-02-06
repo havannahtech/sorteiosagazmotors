@@ -13,7 +13,7 @@
         .header { text-align: center; margin-bottom: 20px; }
         .logo-img { max-width: 180px; height: auto; filter: drop-shadow(0 0 10px rgba(255,0,0,0.4)); }
         
-        /* Contador Estiloso */
+        /* Contador */
         .countdown-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
         .time-box { background: rgba(255,255,255,0.05); border: 1px solid var(--red); border-radius: 10px; padding: 10px; min-width: 60px; text-align: center; }
         .time-num { display: block; font-size: 22px; font-weight: 900; color: #fff; }
@@ -21,12 +21,14 @@
 
         .card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,.1); padding: 25px; border-radius: 25px; backdrop-filter: blur(12px); box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
         .form-control { width: 100%; padding: 15px; margin: 8px 0; border-radius: 12px; border: 1px solid #333; background: rgba(0,0,0,0.6); color: #fff; box-sizing: border-box; outline: none; }
-        .row { display: flex; gap: 10px; }
-
-        /* Botão Instagram Piscando */
-        .insta-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); color: white; text-align: center; padding: 18px; border-radius: 12px; text-decoration: none; font-weight: bold; margin-bottom: 15px; animation: pulse-red 1.5s infinite; border: 2px solid transparent; }
-        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(220, 39, 67, 0.7); border-color: rgba(255,255,255,0.2); } 70% { box-shadow: 0 0 0 15px rgba(220, 39, 67, 0); border-color: #fff; } 100% { box-shadow: 0 0 0 0 rgba(220, 39, 67, 0); } }
         
+        /* Botões de Seguir Lado a Lado */
+        .insta-row { display: flex; gap: 10px; margin-bottom: 15px; }
+        .insta-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px; background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); color: white; text-align: center; padding: 12px 5px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 11px; animation: pulse-red 1.5s infinite; border: 2px solid transparent; }
+        
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(220, 39, 67, 0.7); border-color: rgba(255,255,255,0.2); } 70% { box-shadow: 0 0 0 10px rgba(220, 39, 67, 0); border-color: #fff; } 100% { box-shadow: 0 0 0 0 rgba(220, 39, 67, 0); } }
+        
+        .row { display: flex; gap: 10px; }
         .cta { width: 100%; padding: 18px; background: var(--red); border: none; color: #fff; font-weight: 900; border-radius: 15px; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
         .cta:disabled { opacity: 0.2; cursor: not-allowed; animation: none; }
         
@@ -52,9 +54,15 @@
     </div>
 
     <div class="card">
-        <a href="https://www.instagram.com/sagazmotors" target="_blank" class="insta-btn" id="followBtn">
-            📸 1º SEGUIR @SAGAZMOTORS
-        </a>
+        <p style="text-align: center; font-size: 12px; margin-bottom: 10px; color: #aaa;">1º PASSO: SIGA OS PERFIS ABAIXO</p>
+        <div class="insta-row">
+            <a href="https://www.instagram.com/sagazmotors" target="_blank" class="insta-btn" id="followBtn1">
+                📸 @SAGAZMOTORS
+            </a>
+            <a href="https://www.instagram.com/realbiscoito?igsh=dTg4bDNqejJnbDNw" target="_blank" class="insta-btn" id="followBtn2">
+                📸 @REALBISCOITO
+            </a>
+        </div>
 
         <form id="sorteioForm">
             <input type="text" id="nome" class="form-control" placeholder="Nome Completo" required>
@@ -68,7 +76,7 @@
             
             <input type="text" id="endereco" class="form-control" placeholder="Endereço (Rua e Bairro)" required readonly>
 
-            <button type="submit" id="btnEnviar" class="cta" disabled>2º GARANTIR MEU BILHETE</button>
+            <button type="submit" id="btnEnviar" class="cta" disabled title="Siga os dois perfis acima para liberar">2º GARANTIR MEU BILHETE</button>
         </form>
 
         <div id="resultado">
@@ -89,6 +97,9 @@
 
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbzztt3kC5VNZVQpo8R00VdrmCRsqFmMbDQbylhEh28Icyx93rEICkrVSRMuDZxlEqDTZQ/exec';
+    
+    let seguiu1 = false;
+    let seguiu2 = false;
 
     function validarCPF(cpf) {
         cpf = cpf.replace(/[^\d]+/g,'');
@@ -106,9 +117,9 @@
         return true;
     }
 
-    // NOVA DATA: 28 de Fevereiro de 2026
+    // NOVA DATA: 27 de Fevereiro de 2026
     function updateTimer() {
-        const target = new Date("Feb 28, 2026 18:00:00").getTime();
+        const target = new Date("Feb 27, 2026 18:00:00").getTime();
         const now = new Date().getTime();
         const d = target - now;
         if (d > 0) {
@@ -131,10 +142,24 @@
         }
     });
 
-    $("#followBtn").click(function() {
-        $("#btnEnviar").prop("disabled", false);
-        $(this).html("✅ INSTAGRAM SEGUIDO").css({"background": "#333", "animation": "none"});
+    // Lógica para os dois botões de seguir
+    $("#followBtn1").click(function() {
+        seguiu1 = true;
+        $(this).html("✅ SEGUIDO").css({"background": "#333", "animation": "none"});
+        verificarSeguidores();
     });
+
+    $("#followBtn2").click(function() {
+        seguiu2 = true;
+        $(this).html("✅ SEGUIDO").css({"background": "#333", "animation": "none"});
+        verificarSeguidores();
+    });
+
+    function verificarSeguidores() {
+        if(seguiu1 && seguiu2) {
+            $("#btnEnviar").prop("disabled", false);
+        }
+    }
 
     $("#sorteioForm").on("submit", function(e) {
         e.preventDefault();
@@ -164,13 +189,11 @@
         fetch(scriptURL, { method: "POST", mode: "no-cors", body: JSON.stringify(dados) })
         .then(() => {
             $("#ticketNumber").text(ticketFormatado);
-            
-            // Configura o link do WhatsApp com o número do bilhete e nome
             const msgZap = encodeURIComponent(`Olá Sagaz! Meu nome é ${nomeVal} e acabei de garantir meu bilhete da sorte: ${ticketFormatado}`);
             $("#linkZapBilhete").attr("href", `https://wa.me/5521999052694?text=${msgZap}`).show();
-            
             $("#resultado").fadeIn();
             $("#sorteioForm").hide();
+            $(".insta-row, p").hide(); // Esconde os botões de seguir após o sucesso
             btn.text("CONCLUÍDO");
         }).catch(() => {
             alert("Erro de conexão. Tente novamente.");
