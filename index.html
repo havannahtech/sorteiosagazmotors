@@ -13,9 +13,6 @@
         .header { text-align: center; margin-bottom: 20px; }
         .logo-img { max-width: 180px; height: auto; filter: drop-shadow(0 0 10px rgba(255,0,0,0.4)); }
         
-        /* Chamada Atemporal */
-        .chamada-principal { font-size: 14px; color: #fff; font-weight: 800; text-transform: uppercase; margin: 15px 0; letter-spacing: 1px; text-shadow: 0 0 10px var(--red-glow); }
-
         /* Contador */
         .countdown-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
         .time-box { background: rgba(255,255,255,0.05); border: 1px solid var(--red); border-radius: 10px; padding: 10px; min-width: 60px; text-align: center; }
@@ -28,6 +25,10 @@
         .insta-row { display: flex; gap: 10px; margin-bottom: 15px; }
         .insta-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px; background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); color: white; text-align: center; padding: 12px 5px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 11px; animation: pulse-red 1.5s infinite; border: 2px solid transparent; }
         
+        /* Estilo Botão Status (Reduzido) */
+        .status-btn-small { display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(37, 211, 102, 0.1); color: #25d366; border: 1px solid #25d366; padding: 12px; width: 100%; border-radius: 12px; font-weight: bold; cursor: pointer; margin: 5px 0 15px 0; text-decoration: none; font-size: 12px; transition: 0.3s; box-sizing: border-box; }
+        .status-btn-small.concluido { background: #25d366; color: #fff; }
+
         @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(220, 39, 67, 0.7); border-color: rgba(255,255,255,0.2); } 70% { box-shadow: 0 0 0 10px rgba(220, 39, 67, 0); border-color: #fff; } 100% { box-shadow: 0 0 0 0 rgba(220, 39, 67, 0); } }
         
         .row { display: flex; gap: 10px; }
@@ -40,7 +41,6 @@
         #resultado { display: none; margin-top: 15px; padding: 20px; border-radius: 12px; text-align: center; background: rgba(0,255,100,0.1); color: #00ff88; border: 1px solid #00ff88; }
         .ticket-box { font-size: 32px; font-weight: 900; color: #fff; text-shadow: 0 0 10px #00ff88; margin: 10px 0; }
 
-        /* Rodapé Discreto */
         .footer-discreto { text-align: center; font-size: 9px; color: rgba(255,255,255,0.3); letter-spacing: 2px; text-transform: uppercase; margin-top: 20px; padding-bottom: 10px; }
     </style>
 </head>
@@ -81,7 +81,12 @@
             
             <input type="text" id="endereco" class="form-control" placeholder="Endereço (Rua e Bairro)" required readonly>
 
-            <button type="submit" id="btnEnviar" class="cta" disabled title="Siga os dois perfis acima para liberar">2º GARANTIR MEU BILHETE</button>
+            <p style="text-align: center; font-size: 11px; margin-top: 15px; color: #aaa; text-transform: uppercase;">2º PASSO: PUBLIQUE NO SEU STATUS</p>
+            <a href="javascript:void(0)" onclick="postarStatus()" class="status-btn-small" id="statusBtn">
+                📲 PUBLICAR NO STATUS
+            </a>
+
+            <button type="submit" id="btnEnviar" class="cta" disabled title="Siga os passos anteriores para liberar">3º GARANTIR MEU BILHETE</button>
         </form>
 
         <div id="resultado">
@@ -109,6 +114,7 @@
     
     let seguiu1 = false;
     let seguiu2 = false;
+    let postouStatus = false;
 
     function validarCPF(cpf) {
         cpf = cpf.replace(/[^\d]+/g,'');
@@ -153,17 +159,26 @@
     $("#followBtn1").click(function() {
         seguiu1 = true;
         $(this).html("✅ SEGUIDO").css({"background": "#333", "animation": "none"});
-        verificarSeguidores();
+        verificarRequisitos();
     });
 
     $("#followBtn2").click(function() {
         seguiu2 = true;
         $(this).html("✅ SEGUIDO").css({"background": "#333", "animation": "none"});
-        verificarSeguidores();
+        verificarRequisitos();
     });
 
-    function verificarSeguidores() {
-        if(seguiu1 && seguiu2) {
+    function postarStatus() {
+        const textoStatus = encodeURIComponent("Vou ganhar essa moto 0km da Sagaz Motors! 🏍️💨 Garanta seu bilhete grátis aqui: " + window.location.href);
+        window.open(`https://wa.me/?text=${textoStatus}`, '_blank');
+        
+        postouStatus = true;
+        $("#statusBtn").html("✅ STATUS PUBLICADO").addClass("concluido");
+        verificarRequisitos();
+    }
+
+    function verificarRequisitos() {
+        if(seguiu1 && seguiu2 && postouStatus) {
             $("#btnEnviar").prop("disabled", false);
         }
     }
@@ -200,11 +215,11 @@
             $("#linkZapBilhete").attr("href", `https://wa.me/5521999052694?text=${msgZap}`).show();
             $("#resultado").fadeIn();
             $("#sorteioForm").hide();
-            $(".insta-row, p, .chamada-principal").hide();
+            $(".insta-row, p, .chamada-principal, #statusBtn").hide();
             btn.text("CONCLUÍDO");
         }).catch(() => {
             alert("Erro de conexão. Tente novamente.");
-            btn.prop("disabled", false).text("GARANTIR MEU BILHETE");
+            btn.prop("disabled", false).text("3º GARANTIR MEU BILHETE");
         });
     });
 
